@@ -1,32 +1,66 @@
 package frc.team1793.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import org.strongback.Strongback;
+import org.strongback.components.Motor;
+import org.strongback.components.ui.ContinuousRange;
+import org.strongback.components.ui.Gamepad;
+import org.strongback.drive.TankDrive;
+import org.strongback.hardware.Hardware;
 
 public class Robot extends IterativeRobot {
-    @Override
-    public void robotInit() { }
+
+    protected static TankDrive drive;
+    private ContinuousRange driveSpeed, turnSpeed;
+
+    private EnumAuto startPos;
 
     @Override
-    public void disabledInit() { }
+    public void robotInit() {
+        Motor left = Motor.compose(Hardware.Motors.talon(0), Hardware.Motors.talon(1));
+        Motor right = Motor.compose(Hardware.Motors.talon(2), Hardware.Motors.talon(3));
+        drive = new TankDrive(left, right);
+
+        //TODO initialize with dashboard
+        startPos = EnumAuto.LEFT;
+
+        initControls();
+    }
+
 
     @Override
-    public void autonomousInit() { }
+    public void autonomousInit() {
+        Strongback.disable();
+        Strongback.start();
+    }
 
     @Override
-    public void teleopInit() { }
+    public void autonomousPeriodic() {
+    }
 
     @Override
-    public void testInit() { }
+    public void teleopInit() {
+        // Kill anything if it is ...
+        Strongback.disable();
+        // Start Strongback functions ...
+        Strongback.start();
+    }
 
     @Override
-    public void disabledPeriodic() { }
+    public void teleopPeriodic() {
+        drive.arcade(driveSpeed.read(), turnSpeed.read());
+    }
 
     @Override
-    public void autonomousPeriodic() { }
+    public void disabledInit() {
+        // Tell Strongback that the robot is disabled so it can flush and kill commands.
+        Strongback.disable();
+    }
 
-    @Override
-    public void teleopPeriodic() { }
+    private void initControls() {
+        Gamepad controller = Hardware.HumanInterfaceDevices.logitechDualAction(0);
+        driveSpeed = controller.getLeftY();
+        turnSpeed = controller.getLeftX();
+    }
 
-    @Override
-    public void testPeriodic() { }
 }
