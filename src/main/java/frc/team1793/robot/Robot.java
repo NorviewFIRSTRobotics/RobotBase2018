@@ -2,6 +2,7 @@ package frc.team1793.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import org.strongback.Strongback;
+import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.Gamepad;
@@ -14,12 +15,15 @@ public class Robot extends IterativeRobot {
     private ContinuousRange driveSpeed, turnSpeed;
 
     private EnumAuto startPos;
+    private DualGyro gyro;
 
     @Override
     public void robotInit() {
         Motor left = Motor.compose(Hardware.Motors.talon(0), Hardware.Motors.talon(1));
         Motor right = Motor.compose(Hardware.Motors.talon(2), Hardware.Motors.talon(3));
         drive = new TankDrive(left, right);
+        gyro = new DualGyro(Hardware.AngleSensors.gyroscope(0),Hardware.AngleSensors.gyroscope(1));
+        gyro.zero();
 
         //TODO initialize with dashboard
         startPos = EnumAuto.LEFT;
@@ -62,5 +66,6 @@ public class Robot extends IterativeRobot {
         driveSpeed = controller.getLeftY();
         turnSpeed = controller.getLeftX();
     }
+
 
 }
