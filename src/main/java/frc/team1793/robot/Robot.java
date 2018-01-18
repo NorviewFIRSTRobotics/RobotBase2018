@@ -2,7 +2,6 @@ package frc.team1793.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import org.strongback.Strongback;
-import org.strongback.components.Gyroscope;
 import org.strongback.components.Motor;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.Gamepad;
