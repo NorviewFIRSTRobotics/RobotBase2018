@@ -12,12 +12,23 @@ public class DualGyro implements Gyroscope {
     }
 
     @Override
+    public Gyroscope zero() {
+        gyro1.zero();
+        gyro2.zero();
+        return this;
+    }
+
+    @Override
     public double getRate() {
         return (gyro1.getRate() + gyro2.getRate())/2;
     }
 
     @Override
     public double getAngle() {
-        return (gyro1.getAngle() + gyro2.getAngle())/2;
+        double angle = ((gyro1.getAngle() + gyro2.getAngle())/2)%360;
+        if(angle < 0){
+            return 360 + angle;
+        }
+        return angle;
     }
 }
