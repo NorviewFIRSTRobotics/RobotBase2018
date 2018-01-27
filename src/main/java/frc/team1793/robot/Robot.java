@@ -1,14 +1,19 @@
 package frc.team1793.robot;
 
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.team1793.robot.commands.SolenoidExtendCommand;
+import frc.team1793.robot.commands.SolenoidRetractCommand;
+import frc.team1793.robot.components.GyroSet;
+import frc.team1793.robot.components.SolenoidSet;
+import frc.team1793.robot.no.DriverCamera;
+import frc.team1793.robot.util.EnumAuto;
+import frc.team1793.robot.util.SwitchToggle;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.components.Motor;
 import org.strongback.components.Solenoid;
-import org.strongback.components.Switch;
+import org.strongback.components.SpeedController;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.Gamepad;
 import org.strongback.drive.TankDrive;
@@ -16,25 +21,32 @@ import org.strongback.hardware.Hardware;
 
 public class Robot extends IterativeRobot {
 
-    protected static TankDrive drive;
-    private ContinuousRange driveSpeed, turnSpeed;
+    public static TankDrive drive;
+    private ContinuousRange driveSpeed, turnSpeed, armSpeed;
 
     private EnumAuto startPos;
-    private DualGyro gyro;
+    private GyroSet gyro;
+    private SolenoidSet solenoids;
     private DriverCamera camera;
-    private Solenoid solenoid;
-    private Switch push;
+
+    private SpeedController arm;
 
     @Override
     public void robotInit() {
         Motor left = Motor.compose(Hardware.Motors.talon(0), Hardware.Motors.talon(1));
         Motor right = Motor.compose(Hardware.Motors.talon(2), Hardware.Motors.talon(3));
         drive = new TankDrive(left, right);
-        gyro = new DualGyro(Hardware.AngleSensors.gyroscope(0),Hardware.AngleSensors.gyroscope(1));
+        gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0),Hardware.AngleSensors.gyroscope(1));
         gyro.zero();
         //camera = new DriverCamera();
-        CameraServer.getInstance().startAutomaticCapture();
-        solenoid = Hardware.Solenoids.doubleSolenoid(0,1, Solenoid.Direction.STOPPED);
+        //CameraServer.getInstance().startAutomaticCapture();
+        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(2,3, Solenoid.Direction.STOPPED);
+        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(0,1, Solenoid.Direction.STOPPED);
+        Solenoid solenoid3 = Hardware.Solenoids.doubleSolenoid(4,5,Solenoid.Direction.STOPPED);
+
+        solenoids = new SolenoidSet(solenoid1, solenoid2, solenoid3);
+
+        arm = Hardware.Motors.spark(4);
 
         //TODO initialize with dashboard
         startPos = EnumAuto.LEFT;
@@ -69,6 +81,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         drive.arcade(driveSpeed.read(), turnSpeed.read());
+        //arm.setSpeed(armSpeed.read());
     }
 
     @Override
@@ -81,19 +94,10 @@ public class Robot extends IterativeRobot {
         Gamepad controller = Hardware.HumanInterfaceDevices.logitechDualAction(0);
         driveSpeed = controller.getLeftY();
         turnSpeed = controller.getLeftX();
-
-        push = controller.getA();
+        armSpeed = controller.getRightY();
 
         SwitchReactor switchReactor = Strongback.switchReactor();
-        switchReactor.onTriggered(controller.getA(), () -> {
-            System.out.println("Pressed A!");
-            solenoid.extend();
-        });
-        switchReactor.onTriggered(controller.getB(), () -> {
-            System.out.println("Pressed B!");
-            solenoid.retract();
-        });
+
+        switchReactor.onTriggered(controller.getA(), new SwitchToggle(new SolenoidExtendCommand(solenoids), new SolenoidRetractCommand(solenoids))::execute);
     }
-
-
 }
