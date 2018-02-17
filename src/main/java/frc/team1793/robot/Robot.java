@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team1793.robot.commands.SolenoidExtendCommand;
 import frc.team1793.robot.commands.SolenoidRetractCommand;
+import frc.team1793.robot.components.Arm;
 import frc.team1793.robot.components.GyroSet;
 import frc.team1793.robot.components.SolenoidSet;
 import frc.team1793.robot.no.DriverCamera;
@@ -15,6 +16,7 @@ import org.strongback.components.Motor;
 import org.strongback.components.Solenoid;
 import org.strongback.components.SpeedController;
 import org.strongback.components.ui.ContinuousRange;
+import org.strongback.components.ui.FlightStick;
 import org.strongback.components.ui.Gamepad;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
@@ -22,31 +24,38 @@ import org.strongback.hardware.Hardware;
 public class Robot extends IterativeRobot {
 
     public static TankDrive drive;
-    private ContinuousRange driveSpeed, turnSpeed, armSpeed;
+    private ContinuousRange driveSpeed, turnSpeed, shoulderSpeed, wristSpeed;
 
     private EnumAuto startPos;
     private GyroSet gyro;
-    private SolenoidSet solenoids;
+    private Solenoid grabber;
+    private SolenoidSet scissorLift;
     private DriverCamera camera;
+    private Arm arm;
 
-    private SpeedController arm;
+    private final int SHOULDER_ANGLE = 150;
+    private final int WRIST_ANGLE = 90;
 
     @Override
     public void robotInit() {
+
+        //drive
         Motor left = Motor.compose(Hardware.Motors.talon(0), Hardware.Motors.talon(1));
         Motor right = Motor.compose(Hardware.Motors.talon(2), Hardware.Motors.talon(3));
+        SpeedController shoulder = Hardware.Motors.spark(4);
+        SpeedController wrist = Hardware.Motors.spark(5);
         drive = new TankDrive(left, right);
+
+        //pneumatics
+        grabber = Hardware.Solenoids.doubleSolenoid(0,1, Solenoid.Direction.STOPPED);
+        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(2,3, Solenoid.Direction.STOPPED);
+        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(4,5,Solenoid.Direction.STOPPED);
+        scissorLift = new SolenoidSet(solenoid1, solenoid2);
+
+        //analog
         gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0),Hardware.AngleSensors.gyroscope(1));
         gyro.zero();
-        //camera = new DriverCamera();
-        //CameraServer.getInstance().startAutomaticCapture();
-        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(2,3, Solenoid.Direction.STOPPED);
-        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(0,1, Solenoid.Direction.STOPPED);
-        Solenoid solenoid3 = Hardware.Solenoids.doubleSolenoid(4,5,Solenoid.Direction.STOPPED);
-
-        solenoids = new SolenoidSet(solenoid1, solenoid2, solenoid3);
-
-        arm = Hardware.Motors.spark(4);
+        arm = new Arm(grabber, Hardware.AngleSensors.potentiometer(2,SHOULDER_ANGLE), Hardware.AngleSensors.potentiometer(3,WRIST_ANGLE), shoulder, wrist);
 
         //TODO initialize with dashboard
         startPos = EnumAuto.LEFT;
@@ -58,6 +67,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void robotPeriodic() {
         SmartDashboard.putNumber("angle", gyro.getAngle());
+        arm.periodic();
     }
 
     @Override
@@ -91,13 +101,21 @@ public class Robot extends IterativeRobot {
     }
 
     private void initControls() {
-        Gamepad controller = Hardware.HumanInterfaceDevices.logitechDualAction(0);
-        driveSpeed = controller.getLeftY();
-        turnSpeed = controller.getLeftX();
-        armSpeed = controller.getRightY();
+//        Gamepad controller = Hardware.HumanInterfaceDevices.logitechDualAction(0);
+//        driveSpeed = controller.getLeftY();
+//        turnSpeed = controller.getLeftX();
 
+        FlightStick driveController = Hardware.HumanInterfaceDevices.microsoftSideWinder(0);
+        FlightStick armController = Hardware.HumanInterfaceDevices.logitechAttack3D(1);
         SwitchReactor switchReactor = Strongback.switchReactor();
 
-        switchReactor.onTriggered(controller.getA(), new SwitchToggle(new SolenoidExtendCommand(solenoids), new SolenoidRetractCommand(solenoids))::execute);
+        driveSpeed = driveController.getPitch();
+        turnSpeed = driveController.getYaw();
+
+        shoulderSpeed = armController.getPitch();
+        wristSpeed = armController.getRoll();
+
+        switchReactor.onTriggered(armController.getTrigger(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
+        switchReactor.onTriggered(armController.getButton(0), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
     }
 }
