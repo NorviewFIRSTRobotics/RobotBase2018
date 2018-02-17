@@ -1,10 +1,13 @@
 package frc.team1793.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team1793.robot.commands.SolenoidExtendCommand;
 import frc.team1793.robot.commands.SolenoidRetractCommand;
 import frc.team1793.robot.components.Arm;
+import frc.team1793.robot.components.GamepadRumble;
 import frc.team1793.robot.components.GyroSet;
 import frc.team1793.robot.components.SolenoidSet;
 import frc.team1793.robot.no.DriverCamera;
@@ -12,6 +15,7 @@ import frc.team1793.robot.util.EnumAuto;
 import frc.team1793.robot.util.SwitchToggle;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
+import org.strongback.command.CommandGroup;
 import org.strongback.components.Motor;
 import org.strongback.components.Solenoid;
 import org.strongback.components.SpeedController;
@@ -47,15 +51,15 @@ public class Robot extends IterativeRobot {
         drive = new TankDrive(left, right);
 
         //pneumatics
-        grabber = Hardware.Solenoids.doubleSolenoid(0,1, Solenoid.Direction.STOPPED);
-        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(2,3, Solenoid.Direction.STOPPED);
-        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(4,5,Solenoid.Direction.STOPPED);
+        grabber = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.STOPPED);
+        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.STOPPED);
+        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.STOPPED);
         scissorLift = new SolenoidSet(solenoid1, solenoid2);
 
         //analog
-        gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0),Hardware.AngleSensors.gyroscope(1));
+        gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0), Hardware.AngleSensors.gyroscope(1));
         gyro.zero();
-        arm = new Arm(grabber, Hardware.AngleSensors.potentiometer(2,SHOULDER_ANGLE), Hardware.AngleSensors.potentiometer(3,WRIST_ANGLE), shoulder, wrist);
+        arm = new Arm(grabber, Hardware.AngleSensors.potentiometer(2, SHOULDER_ANGLE), Hardware.AngleSensors.potentiometer(3, WRIST_ANGLE), shoulder, wrist);
 
         //TODO initialize with dashboard
         startPos = EnumAuto.LEFT;
@@ -106,16 +110,19 @@ public class Robot extends IterativeRobot {
 //        turnSpeed = controller.getLeftX();
 
         FlightStick driveController = Hardware.HumanInterfaceDevices.microsoftSideWinder(0);
-        FlightStick armController = Hardware.HumanInterfaceDevices.logitechAttack3D(1);
+        GamepadRumble armController = GamepadRumble.xbox360(1);
         SwitchReactor switchReactor = Strongback.switchReactor();
 
         driveSpeed = driveController.getPitch();
         turnSpeed = driveController.getYaw();
 
-        shoulderSpeed = armController.getPitch();
-        wristSpeed = armController.getRoll();
-
-        switchReactor.onTriggered(armController.getTrigger(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
-        switchReactor.onTriggered(armController.getButton(0), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
+        shoulderSpeed = armController.getLeftY();
+        wristSpeed = armController.getRightY();
+        switchReactor.onTriggered(armController.getRightBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
+        //TODO actually make the right button
+        switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
+        switchReactor.onTriggered(armController.getA(), () -> {armController.setRumble(GenericHID.RumbleType.kLeftRumble,1);});
     }
+
+
 }
