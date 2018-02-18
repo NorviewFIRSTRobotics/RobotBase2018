@@ -1,7 +1,6 @@
 package frc.team1793.robot.components;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.GenericHID;
 import org.strongback.components.ui.Gamepad;
 
 public class RumbleTime {
@@ -13,11 +12,7 @@ public class RumbleTime {
     }
 
     public void periodic() {
-        double progress = (DriverStation.getInstance().getMatchTime() / MAX_TIME);
-        if(progress > 0.5) {
-            gamepad.setRumble(GenericHID.RumbleType.kRightRumble, progress);
-        } else {
-            gamepad.setRumble(GenericHID.RumbleType.kLeftRumble, progress);
-        }
+        double progress = (DriverStation.getInstance().getMatchTime() / MAX_TIME) * 2;
+        gamepad.setRumble(progress <= MAX_TIME / 2 ? progress : 0, progress > MAX_TIME / 2 ? progress : 0);
     }
 }
