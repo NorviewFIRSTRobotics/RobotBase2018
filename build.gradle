@@ -43,16 +43,8 @@ dependencies {
     compile navx()
     compile openrio.powerup.matchData()
 
-    //Necessary for Strongback-Testing
-    testCompile 'junit:junit:+'
-    testCompile 'org.easytesting:fest-assert:1.4'
-    testCompile 'org.easytesting:fest-util:1.1.6'
-    testCompile 'org.hamcrest:hamcrest-core:1.3'
-    testCompile 'com.codahale.metrics:metrics-core:+'
-    //Pulls all jars in the libs folder
-    compile 'strongback:strongback:1'
-    compile 'strongback:strongback-tools:1'
-    compile 'strongback:strongback-testing:1'
+    compile 'strongback:strongback:+'
+    compile 'strongback:strongback-testing:+'
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
