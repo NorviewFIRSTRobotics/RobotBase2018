@@ -69,8 +69,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putNumber("angle", gyro.getAngle());
-        arm.periodic();
+        pushToDashboard();
         RumbleTime.getInstance().periodic(armController);
     }
 
@@ -118,19 +117,25 @@ public class Robot extends IterativeRobot {
 
         shoulderSpeed = armController.getRightY();
 //        wristSpeed = armController.getRightY();
-        switchReactor.onTriggered(armController.getRightBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
         //TODO actually make the right button
+        switchReactor.onTriggered(armController.getRightBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
         switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
         switchReactor.whileTriggered(armController.getY(), () -> {armController.setRumble(1,1);});
 
         switchReactor.whileTriggered(armController.getB(), () -> {desiredAngle++;});
         switchReactor.whileTriggered(armController.getX(), () -> {desiredAngle--;});
-        switchReactor.onTriggered(armController.getY(), () -> {
-            SmartDashboard.putNumber("desired angle", desiredAngle);
+        switchReactor.onTriggered(armController.getA(), () -> {
             Strongback.submit(new ArmCommand(arm, desiredAngle, 0, () -> 1, () -> 0));
         });
 
     }
 
+    private void pushToDashboard(){
+        SmartDashboard.putNumber("angle", gyro.getAngle());
+        SmartDashboard.putNumber("desiredAngle", desiredAngle);
+        SmartDashboard.putString("grabberDirection", grabber.getDirection().name());
+        SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
+        arm.periodic();
+    }
 
 }

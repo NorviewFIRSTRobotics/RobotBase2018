@@ -52,4 +52,12 @@ public class Arm {
              return 0;
          }
     }
+
+    public double getShoulderAngle(){
+        return shoulderAngle.getAngle();
+    }
+
+    public double getWristAngle(){
+        return wristAngle.getAngle();
+    }
 }
