@@ -14,10 +14,7 @@ import frc.team1793.robot.util.SwitchToggle;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
 import org.strongback.command.CommandGroup;
-import org.strongback.components.Motor;
-import org.strongback.components.Solenoid;
-import org.strongback.components.SpeedController;
-import org.strongback.components.Switch;
+import org.strongback.components.*;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.components.ui.Gamepad;
@@ -36,6 +33,8 @@ public class Robot extends IterativeRobot {
     private DriverCamera camera;
     private Arm arm;
     private Gamepad armController;
+    private AngleSensor shoulderSensor;
+    private AngleSensor wristSensor;
 
     private final int SHOULDER_ANGLE = 150;
     private final int WRIST_ANGLE = 90;
@@ -59,7 +58,9 @@ public class Robot extends IterativeRobot {
         //analog
         gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0), Hardware.AngleSensors.gyroscope(1));
         gyro.zero();
-        arm = new Arm(grabber, Hardware.AngleSensors.potentiometer(2, SHOULDER_ANGLE), Hardware.AngleSensors.potentiometer(3, WRIST_ANGLE), shoulder, wrist);
+        shoulderSensor = Hardware.AngleSensors.potentiometer(2,1);
+        wristSensor = Hardware.AngleSensors.potentiometer(3,1);
+        arm = new Arm(grabber, shoulderSensor, wristSensor, shoulder, wrist);
 
         //TODO initialize with dashboard
         startPos = EnumAuto.LEFT;
@@ -96,6 +97,7 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
         drive.arcade(driveSpeed.read(), turnSpeed.read());
         arm.runShoulder(shoulderSpeed);
+        arm.runWrist(wristSpeed);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class Robot extends IterativeRobot {
         turnSpeed = armController.getLeftX();
 
         shoulderSpeed = armController.getRightY();
-//        wristSpeed = armController.getRightY();
+        wristSpeed = armController.getRightX();
 
         switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
         switchReactor.onTriggered(toSwitch(armController.getLeftTrigger()), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
@@ -134,7 +136,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putNumber("angle", gyro.getAngle());
         SmartDashboard.putString("grabberDirection", grabber.getDirection().name());
         SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
-        arm.periodic();
+        SmartDashboard.putNumber("shoulderAngle", shoulderSensor.getAngle());
+        SmartDashboard.putNumber("wristAngle", wristSensor.getAngle());
     }
 
 }
