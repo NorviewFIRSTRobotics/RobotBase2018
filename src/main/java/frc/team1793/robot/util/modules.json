@@ -1,0 +1,215 @@
+{
+  "main": [{
+    "type": "header",
+    "data": {
+      "background": "#345763",
+      "color": "white",
+      "title": "Match Info"
+    }
+  },
+    {
+      "type": "graph",
+      "data": {
+        "prefice": "Voltage",
+        "key": "/SmartDashboard/voltage",
+        "id": "voltage",
+        "format": {
+          "interpolation": "linear",
+          "minValue": 0,
+          "grid": {
+            "strokeStyle": "#FFBBFF",
+            "fillStyle": "#03A3C7",
+            "lineWidth": 1,
+            "millisPerLine": 250,
+            "verticalSections": 6
+          }
+        }
+      }
+    },
+    {
+      "type": "graph",
+      "data": {
+        "prefice": "Current",
+        "key": "/SmartDashboard/current",
+        "id": "current",
+        "format": {
+          "interpolation": "linear",
+          "minValue": 0,
+          "grid": {
+            "strokeStyle": "#00FF55",
+            "fillStyle": "#CC77AA",
+            "lineWidth": 1,
+            "millisPerLine": 250,
+            "verticalSections": 4
+          }
+        }
+      }
+    },
+    {
+      "type": "numbervalue",
+      "data": {
+        "prefice": "Robot Time",
+        "key": "/SmartDashboard/robotTime",
+        "id": "robotTime",
+        "formats": {
+          "low": {
+            "predicate": {
+              "min": 0,
+              "max": 100
+            },
+            "color": "#0000FF"
+          }
+        }
+      }
+    },
+    {
+      "type": "graph",
+      "data": {
+        "prefice": "Robot Time",
+        "key": "/SmartDashboard/robotTime",
+        "id": "robotTime",
+        "format": {
+          "interpolation": "linear",
+          "minValue": 0,
+          "grid": {
+            "strokeStyle": "#000000",
+            "fillStyle": "#CDAAF2",
+            "lineWidth": 1,
+            "millisPerLine": 250,
+            "verticalSections": 2
+          }
+        }
+      }
+    }
+  ],
+  "options": [
+    {
+      "type":"header",
+      "data": {
+        "title":"Options",
+        "background": "#AA0000 repeat",
+        "color": "white"
+      }
+    },
+    {
+      "type": "selector",
+      "data": {
+        "prefice": "Autonomous",
+        "key": "/SmartDashboard/autonomous",
+        "id": "autonomous",
+        "choices": ["left", "center", "right"]
+      }
+    },
+    {
+      "type": "stringvalue",
+      "data": {
+        "prefice": "Robot Phase",
+        "key": "/SmartDashboard/robotPhase",
+        "id": "robotPhase"
+      }
+    },
+    {
+      "type": "field",
+      "data": {
+        "width": 100,
+        "height": 50,
+        "team": 1793
+      }
+    }
+  ],
+  "info": [
+  	{
+  	  "type":"header",
+  	  "data": {
+  		"title":"Info",
+  		"background":"#00367A repeat",
+  		"color": "white"
+  		}
+  	},
+  	{
+  	  "type": "numbervalue",
+	  "data": {
+        "prefice": "Angle",
+        "key": "/SmartDashboard/angle",
+        "id": "angle",
+        "formats": {
+          "low": {
+            "predicate": {
+              "min": 0,
+              "max": 360
+            },
+            "color": "#0000FF"
+          }
+        }
+   	  }
+  	},
+  	{
+      "type": "stringvalue",
+      "data": {
+        "prefice": "Grabber Direction",
+        "key": "/SmartDashboard/grabberDirection",
+        "id": "grabberDirection"
+      }
+    },
+    {
+      "type": "stringvalue",
+      "data": {
+        "prefice": "Scissor Lift Direction",
+        "key": "/SmartDashboard/scissorLiftDirection",
+        "id": "scissorLiftDirection"
+      }
+    },
+    {
+      "type": "selector",
+      "data": {
+        "prefice": "Grabber Direction",
+        "key": "/SmartDashboard/grabberDirection",
+        "id": "grabberDirection",
+        "choices": ["extended", "retracted"]
+      }
+    },
+    {
+      "type": "selector",
+      "data": {
+        "prefice": "Scissor Lift Direction",
+        "key": "/SmartDashboard/scissorLiftDirection",
+        "id": "scissorLiftDirection",
+        "choices": ["extended", "retracted"]
+      }
+    },
+    {
+  	  "type": "numbervalue",
+	  "data": {
+        "prefice": "Shoulder Angle",
+        "key": "/SmartDashboard/shoulderAngle",
+        "id": "shoulderAngle",
+        "formats": {
+          "low": {
+            "predicate": {
+              "min": 0,
+              "max": 360
+            },
+            "color": "#0000FF"
+          }
+        }
+   	  }
+  	},
+  	{
+  	  "type": "numbervalue",
+	  "data": {
+        "prefice": "Wrist Angle",
+        "key": "/SmartDashboard/wristAngle",
+        "id": "wristAngle",
+        "formats": {
+          "low": {
+            "predicate": {
+              "min": 0,
+              "max": 360
+            },
+            "color": "#0000FF"
+          }
+        }
+   	  }
+  	}
+  ]
+}
