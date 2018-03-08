@@ -29,7 +29,8 @@ public class Robot extends IterativeRobot {
     private EnumAuto startPos;
     private GyroSet gyro;
     private Solenoid grabber;
-    private SolenoidSet scissorLift;
+//    private SolenoidSet scissorLift;
+    private Solenoid scissorLift;
     private DriverCamera camera;
     private Arm arm;
     private Gamepad armController;
@@ -50,10 +51,8 @@ public class Robot extends IterativeRobot {
         drive = new TankDrive(left, right);
 
         //pneumatics
-        grabber = Hardware.Solenoids.doubleSolenoid(2, 3, Solenoid.Direction.STOPPED);
-        Solenoid solenoid1 = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.STOPPED);
-        Solenoid solenoid2 = Hardware.Solenoids.doubleSolenoid(5, 4, Solenoid.Direction.STOPPED);
-        scissorLift = new SolenoidSet(solenoid1, solenoid2);
+        grabber = Hardware.Solenoids.doubleSolenoid(0, 1, Solenoid.Direction.STOPPED);
+        scissorLift = Hardware.Solenoids.doubleSolenoid(5, 4, Solenoid.Direction.STOPPED);
 
         //analog
         gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0), Hardware.AngleSensors.gyroscope(1));
@@ -111,17 +110,15 @@ public class Robot extends IterativeRobot {
         armController = Hardware.HumanInterfaceDevices.xbox360(1);
         SwitchReactor switchReactor = Strongback.switchReactor();
 
-//        driveSpeed = driveController.getPitch();
-//        turnSpeed = driveController.getYaw();
+        driveSpeed = driveController.getPitch();
+        turnSpeed = driveController.getYaw();
 
-        driveSpeed = armController.getLeftY();
-        turnSpeed = armController.getLeftX();
+        shoulderSpeed = armController.getRightY().scale(0.75);
+        wristSpeed = armController.getLeftY();
 
-        shoulderSpeed = armController.getRightY();
-        wristSpeed = armController.getRightX();
+        switchReactor.onTriggered(armController.getLeftStick(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
+        switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
 
-        switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
-        switchReactor.onTriggered(toSwitch(armController.getLeftTrigger()), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
 
         //TODO arm states on face buttons
 
@@ -138,6 +135,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
         SmartDashboard.putNumber("shoulderAngle", shoulderSensor.getAngle());
         SmartDashboard.putNumber("wristAngle", wristSensor.getAngle());
+        SmartDashboard.putNumber("driveSpeed",driveSpeed.read());
+        SmartDashboard.putNumber("turnSpeed",turnSpeed.read());
     }
 
 }
