@@ -27,20 +27,14 @@ public class Robot extends IterativeRobot {
     private EnumAuto startPos;
     private GyroSet gyro;
     private Solenoid grabber;
-    //    private SolenoidSet scissorLift;
     private Solenoid scissorLift;
-    private DriverCamera camera;
     private Arm arm;
     private Gamepad armController;
     private AngleSensor shoulderSensor;
     private AngleSensor wristSensor;
 
-    private final int SHOULDER_ANGLE = 150;
-    private final int WRIST_ANGLE = 90;
-
     @Override
     public void robotInit() {
-
         //drive
         Motor left = Motor.compose(Hardware.Motors.talon(0), Hardware.Motors.talon(1)).invert();
         Motor right = Motor.compose(Hardware.Motors.talon(2), Hardware.Motors.talon(3));
@@ -88,6 +82,9 @@ public class Robot extends IterativeRobot {
         Strongback.disable();
         // Start Strongback functions ...
         Strongback.start();
+
+        //guarantee retracted
+        Strongback.submit(new SolenoidRetractCommand(scissorLift));
     }
 
     @Override
@@ -121,10 +118,6 @@ public class Robot extends IterativeRobot {
         //TODO arm states on face buttons
 
 
-    }
-
-    private static Switch toSwitch(ContinuousRange range) {
-        return () -> range.read() > 0.5;
     }
 
     private void pushToDashboard() {

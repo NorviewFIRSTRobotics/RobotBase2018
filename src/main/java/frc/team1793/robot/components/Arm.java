@@ -25,7 +25,7 @@ public class Arm {
     public void runShoulder(ContinuousRange speed, double angle) {
         int range = isOutOfRange(shoulderAngle.getAngle(), angle);
         while (range != 0) {
-            shoulder.setSpeed(speed.scale(range).read());
+            runShoulder(speed.scale(range));
         }
     }
 
@@ -40,7 +40,7 @@ public class Arm {
     public void runWrist(ContinuousRange speed, double angle) {
         int range = isOutOfRange(wristAngle.getAngle(), angle);
         while (range != 0) {
-            wrist.setSpeed(speed.scale(range).read());
+            runWrist(speed.scale(range));
         }
     }
 
@@ -60,6 +60,5 @@ public class Arm {
 
     public double getWristAngle() {
         return wristAngle.getAngle();
-
     }
 }
