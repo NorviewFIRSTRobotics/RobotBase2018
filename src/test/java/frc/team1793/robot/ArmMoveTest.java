@@ -11,5 +11,7 @@ public class ArmMoveTest {
     private CommandTester tester;
 
     @Before
-    public void before(){ arm = new Arm(Mock.manualSolenoid(), Mock.angleSensor(), Mock.angleSensor(), Mock.stoppedMotor(), Mock.stoppedMotor()); }
+    public void before() {
+        arm = new Arm(Mock.manualSolenoid(), Mock.angleSensor(), Mock.angleSensor(), Mock.stoppedMotor(), Mock.stoppedMotor());
+    }
 }

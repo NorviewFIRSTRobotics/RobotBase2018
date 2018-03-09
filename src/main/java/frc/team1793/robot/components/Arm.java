@@ -1,11 +1,9 @@
 package frc.team1793.robot.components;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.strongback.components.AngleSensor;
 import org.strongback.components.Solenoid;
 import org.strongback.components.SpeedController;
 import org.strongback.components.ui.ContinuousRange;
-import org.strongback.hardware.Hardware;
 
 public class Arm {
     private Solenoid grabber;

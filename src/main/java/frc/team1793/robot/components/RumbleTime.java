@@ -7,10 +7,11 @@ public class RumbleTime {
     private static RumbleTime INSTANCE;
 
     public static RumbleTime getInstance() {
-        if(INSTANCE == null)
+        if (INSTANCE == null)
             INSTANCE = new RumbleTime();
         return INSTANCE;
     }
+
     private static final double MAX_TIME = 150;
 
     public void periodic(Gamepad gamepad) {

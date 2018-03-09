@@ -14,7 +14,7 @@ public class AngleMath {
 //        System.out.println(lawOfCos(SHOULDER_LENGTH, WRIST_LENGTH, MAX_LENGTH));
 //    }
 
-    public static double lawOfCos(double a, double b, double c){
-        return Math.toDegrees(Math.acos((a*a + b*b - c*c) / (2 * a * b)));
+    public static double lawOfCos(double a, double b, double c) {
+        return Math.toDegrees(Math.acos((a * a + b * b - c * c) / (2 * a * b)));
     }
 }

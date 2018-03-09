@@ -24,8 +24,8 @@ public class ArmCommand extends Command {
 
     @Override
     public boolean execute() {
-        arm.runShoulder(shoulderSpeed,shoulderAngle);
-        arm.runWrist(wristSpeed,wristAngle);
+        arm.runShoulder(shoulderSpeed, shoulderAngle);
+        arm.runWrist(wristSpeed, wristAngle);
         return true;
     }
 }

@@ -20,9 +20,9 @@ import java.util.function.Supplier;
 public enum EnumAuto {
 
     //TODO implement arm stuff
-    CENTER(drive(3, Constants.SPEED,0)),
-    RIGHT(drive(1, Constants.SPEED,0),drive(2, 0, .4), drive(2, Constants.SPEED, 0)),
-    LEFT(drive(1, Constants.SPEED,0),drive(2, 0, -.4), drive(2, Constants.SPEED, 0));
+    CENTER(drive(3, Constants.SPEED, 0)),
+    RIGHT(drive(1, Constants.SPEED, 0), drive(2, 0, .4), drive(2, Constants.SPEED, 0)),
+    LEFT(drive(1, Constants.SPEED, 0), drive(2, 0, -.4), drive(2, Constants.SPEED, 0));
 
     private Supplier<Command> command;
     private List<Supplier<Command>> commands;

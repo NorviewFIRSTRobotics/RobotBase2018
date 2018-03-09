@@ -1,12 +1,13 @@
 {
-  "main": [{
-    "type": "header",
-    "data": {
-      "background": "#345763",
-      "color": "white",
-      "title": "Match Info"
-    }
-  },
+  "main": [
+    {
+      "type": "header",
+      "data": {
+        "background": "#345763",
+        "color": "white",
+        "title": "Match Info"
+      }
+    },
     {
       "type": "graph",
       "data": {
@@ -84,9 +85,9 @@
   ],
   "options": [
     {
-      "type":"header",
+      "type": "header",
       "data": {
-        "title":"Options",
+        "title": "Options",
         "background": "#AA0000 repeat",
         "color": "white"
       }
@@ -97,7 +98,11 @@
         "prefice": "Autonomous",
         "key": "/SmartDashboard/autonomous",
         "id": "autonomous",
-        "choices": ["left", "center", "right"]
+        "choices": [
+          "left",
+          "center",
+          "right"
+        ]
       }
     },
     {
@@ -118,17 +123,17 @@
     }
   ],
   "info": [
-  	{
-  	  "type":"header",
-  	  "data": {
-  		"title":"Info",
-  		"background":"#00367A repeat",
-  		"color": "white"
-  		}
-  	},
-  	{
-  	  "type": "numbervalue",
-	  "data": {
+    {
+      "type": "header",
+      "data": {
+        "title": "Info",
+        "background": "#00367A repeat",
+        "color": "white"
+      }
+    },
+    {
+      "type": "numbervalue",
+      "data": {
         "prefice": "Angle",
         "key": "/SmartDashboard/angle",
         "id": "angle",
@@ -141,9 +146,9 @@
             "color": "#0000FF"
           }
         }
-   	  }
-  	},
-  	{
+      }
+    },
+    {
       "type": "stringvalue",
       "data": {
         "prefice": "Grabber Direction",
@@ -165,7 +170,10 @@
         "prefice": "Grabber Direction",
         "key": "/SmartDashboard/grabberDirection",
         "id": "grabberDirection",
-        "choices": ["extended", "retracted"]
+        "choices": [
+          "extended",
+          "retracted"
+        ]
       }
     },
     {
@@ -174,12 +182,15 @@
         "prefice": "Scissor Lift Direction",
         "key": "/SmartDashboard/scissorLiftDirection",
         "id": "scissorLiftDirection",
-        "choices": ["extended", "retracted"]
+        "choices": [
+          "extended",
+          "retracted"
+        ]
       }
     },
     {
-  	  "type": "numbervalue",
-	  "data": {
+      "type": "numbervalue",
+      "data": {
         "prefice": "Shoulder Angle",
         "key": "/SmartDashboard/shoulderAngle",
         "id": "shoulderAngle",
@@ -192,11 +203,11 @@
             "color": "#0000FF"
           }
         }
-   	  }
-  	},
-  	{
-  	  "type": "numbervalue",
-	  "data": {
+      }
+    },
+    {
+      "type": "numbervalue",
+      "data": {
         "prefice": "Wrist Angle",
         "key": "/SmartDashboard/wristAngle",
         "id": "wristAngle",
@@ -209,7 +220,7 @@
             "color": "#0000FF"
           }
         }
-   	  }
-  	}
+      }
+    }
   ]
 }

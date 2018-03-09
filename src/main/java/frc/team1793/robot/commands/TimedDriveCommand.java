@@ -30,15 +30,17 @@ public class TimedDriveCommand extends Command {
     protected double turnSpeed;
     protected boolean squareInputs;
     protected double duration;
+
     /**
      * Create a new autonomous command.
-     * @param drive the chassis
-     * @param driveSpeed the speed at which to shooter forward; should be [-1.0, 1.0]
-     * @param turnSpeed the speed at which to turn; should be [-1.0, 1.0]
+     *
+     * @param drive        the chassis
+     * @param driveSpeed   the speed at which to shooter forward; should be [-1.0, 1.0]
+     * @param turnSpeed    the speed at which to turn; should be [-1.0, 1.0]
      * @param squareInputs whether to increase sensitivity at low speeds
-     * @param duration the duration of this command; should be positive
+     * @param duration     the duration of this command; should be positive
      */
-    public TimedDriveCommand( TankDrive drive, double duration ,double driveSpeed, double turnSpeed, boolean squareInputs) {
+    public TimedDriveCommand(TankDrive drive, double duration, double driveSpeed, double turnSpeed, boolean squareInputs) {
         super(duration, drive);
         this.drive = drive;
         this.driveSpeed = driveSpeed;
@@ -48,7 +50,7 @@ public class TimedDriveCommand extends Command {
     }
 
     public TimedDriveCommand(TankDrive drive, double duration, double driveSpeed, double turnSpeed) {
-        this(drive,duration,driveSpeed,turnSpeed,false);
+        this(drive, duration, driveSpeed, turnSpeed, false);
     }
 
     public TimedDriveCommand() {
@@ -73,6 +75,6 @@ public class TimedDriveCommand extends Command {
 
     @Override
     public String toString() {
-        return String.format("Drive > %s, Turn >  %s, Duration > %s", driveSpeed,turnSpeed,duration);
+        return String.format("Drive > %s, Turn >  %s, Duration > %s", driveSpeed, turnSpeed, duration);
     }
 }

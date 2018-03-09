@@ -1,19 +1,17 @@
 package frc.team1793.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team1793.robot.commands.ArmCommand;
 import frc.team1793.robot.commands.SolenoidExtendCommand;
 import frc.team1793.robot.commands.SolenoidRetractCommand;
-import frc.team1793.robot.components.*;
+import frc.team1793.robot.components.Arm;
+import frc.team1793.robot.components.GyroSet;
+import frc.team1793.robot.components.RumbleTime;
 import frc.team1793.robot.no.DriverCamera;
 import frc.team1793.robot.util.EnumAuto;
 import frc.team1793.robot.util.SwitchToggle;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
-import org.strongback.command.CommandGroup;
 import org.strongback.components.*;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.FlightStick;
@@ -29,7 +27,7 @@ public class Robot extends IterativeRobot {
     private EnumAuto startPos;
     private GyroSet gyro;
     private Solenoid grabber;
-//    private SolenoidSet scissorLift;
+    //    private SolenoidSet scissorLift;
     private Solenoid scissorLift;
     private DriverCamera camera;
     private Arm arm;
@@ -57,8 +55,8 @@ public class Robot extends IterativeRobot {
         //analog
         gyro = new GyroSet(Hardware.AngleSensors.gyroscope(0), Hardware.AngleSensors.gyroscope(1));
         gyro.zero();
-        shoulderSensor = Hardware.AngleSensors.potentiometer(2,1);
-        wristSensor = Hardware.AngleSensors.potentiometer(3,1);
+        shoulderSensor = Hardware.AngleSensors.potentiometer(2, 1);
+        wristSensor = Hardware.AngleSensors.potentiometer(3, 1);
         arm = new Arm(grabber, shoulderSensor, wristSensor, shoulder, wrist);
 
         //TODO initialize with dashboard
@@ -135,8 +133,8 @@ public class Robot extends IterativeRobot {
         SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
         SmartDashboard.putNumber("shoulderAngle", shoulderSensor.getAngle());
         SmartDashboard.putNumber("wristAngle", wristSensor.getAngle());
-        SmartDashboard.putNumber("driveSpeed",driveSpeed.read());
-        SmartDashboard.putNumber("turnSpeed",turnSpeed.read());
+        SmartDashboard.putNumber("driveSpeed", driveSpeed.read());
+        SmartDashboard.putNumber("turnSpeed", turnSpeed.read());
     }
 
 }

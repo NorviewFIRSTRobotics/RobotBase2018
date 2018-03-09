@@ -41,7 +41,7 @@ public class ArmTest extends Application {
         double D2 = lawOfCosine(d, SHOULDER_LENGTH, WRIST_LENGTH);
         double A1 = D1 + D2;
         double A2 = lawOfCosine(SHOULDER_LENGTH, WRIST_LENGTH, d);
-        return new Vec2d(Math.abs(Math.PI*2+A1), Math.abs(Math.PI*2+A2));
+        return new Vec2d(Math.abs(Math.PI * 2 + A1), Math.abs(Math.PI * 2 + A2));
     }
 
     public static void main(String[] args) {
@@ -53,11 +53,11 @@ public class ArmTest extends Application {
         return Math.sqrt(a * a + b * b);
     }
 
-    private double x = -Math.sqrt(2)*50, y = -Math.sqrt(2)*50;
+    private double x = -Math.sqrt(2) * 50, y = -Math.sqrt(2) * 50;
 
     @Override
     public void start(Stage primaryStage) {
-        Vec2d angles = new Vec2d(Math.toRadians(90),Math.toRadians(180));
+        Vec2d angles = new Vec2d(Math.toRadians(90), Math.toRadians(180));
         shoulderGoal.set(angles.x);
         wristGoal.set(angles.y);
         System.out.printf("x=%s, y=%s: A1=%s (%s°), A2=%s (%s°)\n", x, y, angles.x, Math.toDegrees(angles.x), angles.y, Math.toDegrees(angles.y));
@@ -106,17 +106,17 @@ public class ArmTest extends Application {
     private void draw2DShapes(GraphicsContext gc) {
         double wristX1 = Math.cos(shoulderAngle.doubleValue()) * SHOULDER_LENGTH + shoulderStart.x;
         double wristY1 = -Math.sin(shoulderAngle.doubleValue()) * SHOULDER_LENGTH + shoulderStart.y;
-        double wristX2 = Math.cos(wristAngle.doubleValue()-(Math.PI-shoulderAngle.doubleValue())) * WRIST_LENGTH + wristX1;
-        double wristY2 = -Math.sin(wristAngle.doubleValue()-(Math.PI-shoulderAngle.doubleValue())) * WRIST_LENGTH + wristY1;
+        double wristX2 = Math.cos(wristAngle.doubleValue() - (Math.PI - shoulderAngle.doubleValue())) * WRIST_LENGTH + wristX1;
+        double wristY2 = -Math.sin(wristAngle.doubleValue() - (Math.PI - shoulderAngle.doubleValue())) * WRIST_LENGTH + wristY1;
 
         gc.setFill(Color.rgb(255, 255, 255));
         gc.fillRect(0, 0, W, H);
         //grid
         gc.setLineWidth(0.5);
         gc.setStroke(Color.rgb(0, 0, 0));
-        for (int i = -W/2; i <= W/2; i+=10) {
-            gc.strokeLine(W/2+i, 0, W/2+i, H);
-            gc.strokeLine(0,H/2+i, W,H/2+i);
+        for (int i = -W / 2; i <= W / 2; i += 10) {
+            gc.strokeLine(W / 2 + i, 0, W / 2 + i, H);
+            gc.strokeLine(0, H / 2 + i, W, H / 2 + i);
         }
         gc.setLineWidth(5);
 //        gc.setStroke(Color.rgb(0, 0, 255));

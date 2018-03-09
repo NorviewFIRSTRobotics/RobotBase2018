@@ -16,12 +16,12 @@ public class SolenoidTest {
     private CommandTester tester;
 
     @Before
-    public void before(){
+    public void before() {
         solenoid = new SolenoidSet(Mock.manualSolenoid(), Mock.manualSolenoid());
     }
 
     @Test
-    public void extendTest(){
+    public void extendTest() {
         tester = new CommandTester(new SolenoidExtendCommand(solenoid));
         assertThat(solenoid.isStopped()).isTrue();
         tester.step(START_TIME_MS);
@@ -31,7 +31,7 @@ public class SolenoidTest {
     }
 
     @Test
-    public void retractTest(){
+    public void retractTest() {
         tester = new CommandTester(new SolenoidRetractCommand(solenoid));
         assertThat(solenoid.isStopped()).isTrue();
         tester.step(START_TIME_MS);

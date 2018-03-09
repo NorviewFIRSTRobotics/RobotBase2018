@@ -26,8 +26,8 @@ public class GyroSet implements Gyroscope {
 
     @Override
     public double getAngle() {
-        double angle = gyros.stream().mapToDouble(Gyroscope::getAngle).average().orElse(0)%360;
-        if(angle < 0){
+        double angle = gyros.stream().mapToDouble(Gyroscope::getAngle).average().orElse(0) % 360;
+        if (angle < 0) {
             return 360 + angle;
         }
         return angle;
