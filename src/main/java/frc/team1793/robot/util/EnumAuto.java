@@ -15,14 +15,14 @@ import java.util.function.Supplier;
  * @author Tyler Marshall
  * @version 3/27/17
  */
+
 @SuppressWarnings("unused")
 
 public enum EnumAuto {
 
     //TODO implement arm stuff
-    CENTER(drive(3, Constants.SPEED,0)),
-    RIGHT(drive(1, Constants.SPEED,0),drive(2, 0, .4), drive(2, Constants.SPEED, 0)),
-    LEFT(drive(1, Constants.SPEED,0),drive(2, 0, -.4), drive(2, Constants.SPEED, 0));
+    FORWARD(drive(3.5, Constants.SPEED,0)),
+    SWITCH(SwitchAuto.doSwitch());
 
     private Supplier<Command> command;
     private List<Supplier<Command>> commands;

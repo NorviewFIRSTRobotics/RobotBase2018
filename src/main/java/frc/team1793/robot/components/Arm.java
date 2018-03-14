@@ -25,8 +25,8 @@ public class Arm {
     }
 
     public void runShoulder(ContinuousRange speed, double angle) {
-        int range = isOutOfRange(shoulderAngle.getAngle(), angle);
-        while (range != 0) {
+        int range;
+        while (( range = isOutOfRange(shoulderAngle.getAngle(), angle)) != 0) {
             shoulder.setSpeed(speed.scale(range).read());
         }
     }
@@ -37,19 +37,20 @@ public class Arm {
 
     public void runWrist(ContinuousRange speed) {
         wrist.setSpeed(speed.read());
+        SmartDashboard.putNumber("wristSpeed", speed.read());
     }
 
     public void runWrist(ContinuousRange speed, double angle) {
-        int range = isOutOfRange(wristAngle.getAngle(), angle);
-        while (range != 0) {
+        int range;
+        while ((range = isOutOfRange(wristAngle.getAngle(), angle)) != 0) {
             wrist.setSpeed(speed.scale(range).read());
         }
     }
 
     public int isOutOfRange(double angle1, double angle2) {
-        if (angle1 > angle2 + DELTA_ERROR || angle1 > angle2 + DELTA_ERROR) {
+        if (angle1 > angle2 + DELTA_ERROR || angle1 > angle2 - DELTA_ERROR) {
             return -1;
-        } else if (angle1 < angle2 + DELTA_ERROR || angle1 < angle2 + DELTA_ERROR) {
+        } else if (angle1 < angle2 - DELTA_ERROR || angle1 < angle2 - DELTA_ERROR) {
             return 1;
         } else {
             return 0;
