@@ -8,7 +8,7 @@ import java.util.List;
 public class SolenoidSet implements Solenoid {
     private List<Solenoid> solenoids;
 
-    public SolenoidSet(Solenoid... solenoids){
+    public SolenoidSet(Solenoid... solenoids) {
         this.solenoids = Arrays.asList(solenoids);
     }
 

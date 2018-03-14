@@ -7,7 +7,7 @@ public class SolenoidRetractCommand extends Command {
 
     private final Solenoid solenoid;
 
-    public SolenoidRetractCommand(Solenoid solenoid){
+    public SolenoidRetractCommand(Solenoid solenoid) {
         super(solenoid);
         this.solenoid = solenoid;
     }

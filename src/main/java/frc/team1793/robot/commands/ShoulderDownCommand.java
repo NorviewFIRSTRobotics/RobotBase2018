@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.team1793.robot.Robot;
 import frc.team1793.robot.components.Arm;
 import org.strongback.command.Command;
-import org.strongback.command.Requirable;
 import org.strongback.components.ui.ContinuousRange;
 
 import java.util.function.Supplier;
@@ -12,39 +11,36 @@ import java.util.function.Supplier;
 public class ShoulderDownCommand extends Command {
     private Arm arm;
     private Supplier<Double> shoulderAngle;
-    private Supplier<Double> wristAngle;
+    private Supplier<Boolean> wristSwitch;
     private ContinuousRange shoulderSpeed;
     private ContinuousRange wristSpeed;
-    private double wristGoal;
 
-    public ShoulderDownCommand(Arm arm, Supplier<Double> shoulderAngle, Supplier<Double> wristAngle, ContinuousRange shoulderSpeed, ContinuousRange wristSpeed) {
+    public ShoulderDownCommand(Arm arm, Supplier<Double> shoulderAngle, Supplier<Boolean> wristSwitch, ContinuousRange shoulderSpeed, ContinuousRange wristSpeed) {
         this.arm = arm;
         this.shoulderAngle = shoulderAngle;
-        this.wristAngle = wristAngle;
+        this.wristSwitch = wristSwitch;
         this.shoulderSpeed = shoulderSpeed;
         this.wristSpeed = wristSpeed;
-        this.wristGoal = wristGoal;
     }
 
     @Override
-    public boolean execute(){
-        Robot.setArmMovement(true);
-        while(shoulderAngle.get() > Robot.SHOULDER_DOWN){
-            if(DriverStation.getInstance().isDisabled()){
+    public boolean execute() {
+        Robot.setShoulderMovement(true);
+        while (shoulderAngle.get() > Robot.SHOULDER_DOWN) {
+            if (DriverStation.getInstance().isDisabled()) {
                 return true;
             }
-            System.out.printf("Shoulder Angle %s\n",shoulderAngle);
-            while(wristAngle.get() < Robot.WRIST_STORED){
-                if(DriverStation.getInstance().isDisabled()){
+            System.out.printf("Shoulder Angle %s\n", shoulderAngle);
+            while (!wristSwitch.get()) {
+                if (DriverStation.getInstance().isDisabled()) {
                     return true;
                 }
-                System.out.printf("Wrist Angle %s\n",wristAngle);
+                System.out.printf("Wrist Angle %s\n", wristSwitch);
                 arm.runWrist(wristSpeed);
             }
             arm.runShoulder(shoulderSpeed);
         }
-//        Robot.setWristGoal(wristGoal);
-        Robot.setArmMovement(false);
+        Robot.setShoulderMovement(false);
         return true;
     }
 }

@@ -5,30 +5,22 @@ import org.strongback.components.AngleSensor;
 import org.strongback.components.Solenoid;
 import org.strongback.components.SpeedController;
 import org.strongback.components.ui.ContinuousRange;
-import org.strongback.hardware.Hardware;
 
 public class Arm {
     private Solenoid grabber;
     private AngleSensor shoulderAngle;
-    private AngleSensor wristAngle;
+    private LimitSwitch wristSwitch;
     private SpeedController shoulder;
     private SpeedController wrist;
     private static final double DELTA_ERROR = 20;
 
-    public Arm(Solenoid grabber, AngleSensor shoulderAngle, AngleSensor wristAngle, SpeedController shoulder, SpeedController wrist) {
+    public Arm(Solenoid grabber, AngleSensor shoulderAngle, LimitSwitch wristSwitch, SpeedController shoulder, SpeedController wrist) {
         this.grabber = grabber;
         this.shoulderAngle = shoulderAngle;
-        this.wristAngle = wristAngle;
+        this.wristSwitch = wristSwitch;
         this.shoulder = shoulder;
         this.wrist = wrist;
 
-    }
-
-    public void runShoulder(ContinuousRange speed, double angle) {
-        int range;
-        while (( range = isOutOfRange(shoulderAngle.getAngle(), angle)) != 0) {
-            shoulder.setSpeed(speed.scale(range).read());
-        }
     }
 
     public void runShoulder(ContinuousRange speed) {
@@ -38,31 +30,5 @@ public class Arm {
     public void runWrist(ContinuousRange speed) {
         wrist.setSpeed(speed.read());
         SmartDashboard.putNumber("wristSpeed", speed.read());
-    }
-
-    public void runWrist(ContinuousRange speed, double angle) {
-        int range;
-        while ((range = isOutOfRange(wristAngle.getAngle(), angle)) != 0) {
-            wrist.setSpeed(speed.scale(range).read());
-        }
-    }
-
-    public int isOutOfRange(double angle1, double angle2) {
-        if (angle1 > angle2 + DELTA_ERROR || angle1 > angle2 - DELTA_ERROR) {
-            return -1;
-        } else if (angle1 < angle2 - DELTA_ERROR || angle1 < angle2 - DELTA_ERROR) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
-    public double getShoulderAngle() {
-        return shoulderAngle.getAngle();
-    }
-
-    public double getWristAngle() {
-        return wristAngle.getAngle();
-
     }
 }

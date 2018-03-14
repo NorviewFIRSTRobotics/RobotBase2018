@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 public enum EnumAuto {
 
     //TODO implement arm stuff
-    FORWARD(drive(3.5, Constants.SPEED,0)),
+    FORWARD(drive(3.5, Constants.SPEED, 0)),
     SWITCH(SwitchAuto.doSwitch());
 
     private Supplier<Command> command;

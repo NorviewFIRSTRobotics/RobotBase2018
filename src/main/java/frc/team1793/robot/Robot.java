@@ -1,47 +1,46 @@
 package frc.team1793.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team1793.robot.commands.*;
-import frc.team1793.robot.components.*;
-import frc.team1793.robot.no.DriverCamera;
+import frc.team1793.robot.components.Arm;
+import frc.team1793.robot.components.LimitSwitch;
+import frc.team1793.robot.components.RumbleTime;
 import frc.team1793.robot.util.EnumAuto;
 import frc.team1793.robot.util.SwitchToggle;
 import org.strongback.Strongback;
 import org.strongback.SwitchReactor;
-import org.strongback.command.CommandGroup;
 import org.strongback.components.*;
 import org.strongback.components.ui.ContinuousRange;
 import org.strongback.components.ui.FlightStick;
 import org.strongback.components.ui.Gamepad;
 import org.strongback.drive.TankDrive;
 import org.strongback.hardware.Hardware;
-import org.strongback.util.Values;
 
 public class Robot extends IterativeRobot {
 
-    public static TankDrive drive;
-    private ContinuousRange driveSpeed, turnSpeed, shoulderSpeed, wristSpeed;
-
-    private EnumAuto startPos;
-    private GyroSet gyro;
-    public static Solenoid grabber;
-//    private Solenoid scissorLift;
-    private DriverCamera camera;
-    private Arm arm;
+    public static Arm arm;
     private Gamepad armController;
-    private AngleSensor shoulderSensor;
-    private AngleSensor wristSensor;
-    private Gamepad driveController;
-    private static double wristGoal;
+    public static TankDrive drive;
+    private FlightStick driveController;
+    private ContinuousRange driveSpeed;
+    public static Solenoid grabber;
+    private SpeedController ramp;
+    //    private Solenoid scissorLift;
     private static boolean shoulderMoving;
+    private AngleSensor shoulderSensor;
+    private ContinuousRange shoulderSpeed;
+    private EnumAuto startPos;
+    private ContinuousRange turnSpeed;
+    private static boolean wristMoving;
+    private ContinuousRange wristSpeed;
+    private LimitSwitch wristSwitch;
 
     public static final double SHOULDER_DOWN = 20;
     public static final double SHOULDER_UP = 53;
-    public static final double WRIST_STRAIGHT = 30;
     public static final double WRIST_DOWN = 12;
+    public static final double WRIST_STRAIGHT = 30;
     public static final double WRIST_STORED = 110;
 
 
@@ -54,17 +53,19 @@ public class Robot extends IterativeRobot {
         SpeedController shoulder = Hardware.Motors.spark(5);
         SpeedController wrist = Hardware.Motors.spark(4);
         drive = new TankDrive(left, right);
+        ramp = Hardware.Motors.spark(6);
 
         //pneumatics
         grabber = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.STOPPED);
 //        scissorLift = Hardware.Solenoids.doubleSolenoid(5, 4, Solenoid.Direction.STOPPED);
 
         //analog
-//        gyro = new GyroSet(Hardware.AngleSensors.gyroscope(8), Hardware.AngleSensors.gyroscope(1));
-//        gyro.zero();
-        shoulderSensor = Hardware.AngleSensors.potentiometer(2,135);
-        wristSensor = Hardware.AngleSensors.potentiometer(0,220);
-        arm = new Arm(grabber, shoulderSensor, wristSensor, shoulder, wrist);
+        shoulderSensor = Hardware.AngleSensors.potentiometer(2, 135);
+//        wristSensor = Hardware.AngleSensors.potentiometer(0,220);
+        wristSwitch = new LimitSwitch(0);
+        arm = new Arm(grabber, shoulderSensor, wristSwitch, shoulder, wrist);
+
+        CameraServer.getInstance().startAutomaticCapture();
 
         initControls();
     }
@@ -87,7 +88,9 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void autonomousPeriodic() {
-        arm.runWrist(() -> 0.3);
+        if (!wristMoving) {
+            arm.runWrist(() -> 0.3);
+        }
     }
 
     @Override
@@ -101,14 +104,9 @@ public class Robot extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
         drive.arcade(driveSpeed.read(), turnSpeed.read());
-//        arm.runShoulder(shoulderSpeed);
-//        arm.runWrist(wristSpeed);
-        if(!shoulderMoving){
+        if (!shoulderMoving) {
             arm.runWrist(wristSpeed);
         }
-//        if(shoulderSensor.getAngle() > 50){
-//            arm.runShoulder(() -> 0.3);
-//        }
     }
 
     @Override
@@ -118,49 +116,44 @@ public class Robot extends IterativeRobot {
     }
 
     private void initControls() {
-        driveController = Hardware.HumanInterfaceDevices.xbox360(0);
+        driveController = Hardware.HumanInterfaceDevices.logitechAttack3D(0);
         armController = Hardware.HumanInterfaceDevices.xbox360(1);
         SwitchReactor switchReactor = Strongback.switchReactor();
-        driveSpeed = driveController.getLeftY().scale(0.7);
-        turnSpeed = driveController.getLeftX();
 
-//        shoulderSpeed = armController.getRightY().scale(0.75);
-        wristSpeed = armController.getLeftY().scale(0.8);/*.map(a -> {
-            if(Values.fuzzyCompare(a,0,0.25) == 0){
-                return 0.6;
-            }
-            else {
-                return a;
-            }
-        });*/
+        driveSpeed = driveController.getPitch().scale(0.7);
+        turnSpeed = driveController.getYaw();
+        wristSpeed = armController.getLeftY().scale(0.8);
+
         double w = 0.65, su = 0.5, sd = 0.25;
         //TODO get potentiometer angles!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! please
-        switchReactor.onTriggered(armController.getRightBumper(), () -> Strongback.submit(new ShoulderDownCommand(arm, shoulderSensor::getAngle, wristSensor::getAngle, () -> -sd, () -> w)));
-        switchReactor.onTriggered(armController.getRightStick(), () -> Strongback.submit(new ShoulderUpCommand(arm, shoulderSensor::getAngle, wristSensor::getAngle, () -> su, () -> w)));
+        switchReactor.onTriggered(armController.getRightBumper(), () -> Strongback.submit(new ShoulderDownCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> -sd, () -> w)));
+        switchReactor.onTriggered(armController.getRightStick(), () -> Strongback.submit(new ShoulderUpCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> su, () -> w)));
+        switchReactor.onTriggered(armController.getStart(), () -> Strongback.submit(new RunRampCommand(ramp, 0.5, () -> 0.5)));
 
 //        switchReactor.onTriggered(armController.getLeftStick(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
         switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
     }
+
     private static Switch toSwitch(ContinuousRange range) {
         return () -> range.read() > 0.5;
     }
 
-    public static void setWristGoal(double newGoal) {
-        wristGoal = newGoal;
-    }
-
-    public static void setArmMovement(boolean armMoving){
+    public static void setShoulderMovement(boolean armMoving) {
         shoulderMoving = armMoving;
     }
 
+    public static void setWristMovement(boolean armMoving) {
+        wristMoving = armMoving;
+    }
+
     private void pushToDashboard() {
-//        SmartDashboard.putNumber("angle", gyro.getAngle());
+
         SmartDashboard.putString("grabberDirection", grabber.getDirection().name());
 //        SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
         SmartDashboard.putNumber("shoulderAngle", shoulderSensor.getAngle());
-        SmartDashboard.putNumber("wristAngle", wristSensor.getAngle());
-        SmartDashboard.putNumber("driveSpeed",driveSpeed.read());
-        SmartDashboard.putNumber("turnSpeed",turnSpeed.read());
+        SmartDashboard.putString("wristStored", Boolean.toString(wristSwitch.isTriggered()));
+        SmartDashboard.putNumber("driveSpeed", driveSpeed.read());
+        SmartDashboard.putNumber("turnSpeed", turnSpeed.read());
     }
 
 }

@@ -127,54 +127,11 @@
   		}
   	},
   	{
-  	  "type": "numbervalue",
-	  "data": {
-        "prefice": "Angle",
-        "key": "/SmartDashboard/angle",
-        "id": "angle",
-        "formats": {
-          "low": {
-            "predicate": {
-              "min": 0,
-              "max": 360
-            },
-            "color": "#0000FF"
-          }
-        }
-   	  }
-  	},
-  	{
       "type": "stringvalue",
       "data": {
         "prefice": "Grabber Direction",
         "key": "/SmartDashboard/grabberDirection",
         "id": "grabberDirection"
-      }
-    },
-    {
-      "type": "stringvalue",
-      "data": {
-        "prefice": "Scissor Lift Direction",
-        "key": "/SmartDashboard/scissorLiftDirection",
-        "id": "scissorLiftDirection"
-      }
-    },
-    {
-      "type": "selector",
-      "data": {
-        "prefice": "Grabber Direction",
-        "key": "/SmartDashboard/grabberDirection",
-        "id": "grabberDirection",
-        "choices": ["extended", "retracted"]
-      }
-    },
-    {
-      "type": "selector",
-      "data": {
-        "prefice": "Scissor Lift Direction",
-        "key": "/SmartDashboard/scissorLiftDirection",
-        "id": "scissorLiftDirection",
-        "choices": ["extended", "retracted"]
       }
     },
     {
@@ -195,20 +152,11 @@
    	  }
   	},
   	{
-  	  "type": "numbervalue",
+  	  "type": "stringvalue",
 	  "data": {
-        "prefice": "Wrist Angle",
-        "key": "/SmartDashboard/wristAngle",
-        "id": "wristAngle",
-        "formats": {
-          "low": {
-            "predicate": {
-              "min": 0,
-              "max": 360
-            },
-            "color": "#0000FF"
-          }
-        }
+        "prefice": "Is Wrist Stored",
+        "key": "/SmartDashboard/wristStored",
+        "id": "wristStored"
    	  }
   	}
   ]

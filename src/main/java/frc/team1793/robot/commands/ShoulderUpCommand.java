@@ -11,41 +11,38 @@ import java.util.function.Supplier;
 public class ShoulderUpCommand extends Command {
     private Arm arm;
     private Supplier<Double> shoulderAngle;
-    private Supplier<Double> wristAngle;
+    private Supplier<Boolean> wristSwitch;
     private ContinuousRange shoulderSpeed;
     private ContinuousRange wristSpeed;
-    private double wristGoal;
 
 
-    public ShoulderUpCommand(Arm arm, Supplier<Double> shoulderAngle, Supplier<Double> wristAngle, ContinuousRange shoulderSpeed, ContinuousRange wristSpeed) {
+    public ShoulderUpCommand(Arm arm, Supplier<Double> shoulderAngle, Supplier<Boolean> wristSwitch, ContinuousRange shoulderSpeed, ContinuousRange wristSpeed) {
         this.arm = arm;
         this.shoulderAngle = shoulderAngle;
-        this.wristAngle = wristAngle;
+        this.wristSwitch = wristSwitch;
         this.shoulderSpeed = shoulderSpeed;
         this.wristSpeed = wristSpeed;
-        this.wristGoal = wristGoal;
     }
 
     @Override
-    public boolean execute(){
-        Robot.setArmMovement(true);
-        while(shoulderAngle.get() < Robot.SHOULDER_UP){
-            if(DriverStation.getInstance().isDisabled()){
+    public boolean execute() {
+        Robot.setShoulderMovement(true);
+        while (shoulderAngle.get() < Robot.SHOULDER_UP) {
+            if (DriverStation.getInstance().isDisabled()) {
                 return true;
             }
-            System.out.printf("Shoulder Angle %s\n",shoulderAngle);
-            System.out.printf("Wrist Angle %s\n",wristAngle);
-            while(wristAngle.get() < Robot.WRIST_STORED){
-                if(DriverStation.getInstance().isDisabled()){
+            System.out.printf("Shoulder Angle %s\n", shoulderAngle);
+            System.out.printf("Wrist Angle %s\n", wristSwitch);
+            while (!wristSwitch.get()) {
+                if (DriverStation.getInstance().isDisabled()) {
                     return true;
                 }
-                System.out.printf("Wrist Angle %s\n",wristAngle);
+                System.out.printf("Wrist Angle %s\n", wristSwitch);
                 arm.runWrist(wristSpeed);
             }
             arm.runShoulder(shoulderSpeed);
         }
-//        Robot.setWristGoal(wristGoal);
-        Robot.setArmMovement(false);
+        Robot.setShoulderMovement(false);
         return true;
     }
 }
