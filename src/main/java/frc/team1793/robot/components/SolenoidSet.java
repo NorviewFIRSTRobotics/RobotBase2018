@@ -27,7 +27,6 @@ public class SolenoidSet implements Solenoid {
     @Override
     public Solenoid retract() {
         solenoids.forEach(Solenoid::retract);
-
         return this;
     }
 
