@@ -27,7 +27,6 @@ public class Robot extends IterativeRobot {
     private ContinuousRange driveSpeed;
     public static Solenoid grabber;
     private SpeedController ramp;
-    //    private Solenoid scissorLift;
     private static boolean shoulderMoving;
     private AngleSensor shoulderSensor;
     private ContinuousRange shoulderSpeed;
@@ -57,11 +56,9 @@ public class Robot extends IterativeRobot {
 
         //pneumatics
         grabber = Hardware.Solenoids.doubleSolenoid(4, 5, Solenoid.Direction.STOPPED);
-//        scissorLift = Hardware.Solenoids.doubleSolenoid(5, 4, Solenoid.Direction.STOPPED);
 
-        //analog
+        //sensors
         shoulderSensor = Hardware.AngleSensors.potentiometer(2, 135);
-//        wristSensor = Hardware.AngleSensors.potentiometer(0,220);
         wristSwitch = new LimitSwitch(0);
         arm = new Arm(grabber, shoulderSensor, wristSwitch, shoulder, wrist);
 
@@ -129,8 +126,6 @@ public class Robot extends IterativeRobot {
         switchReactor.onTriggered(armController.getRightBumper(), () -> Strongback.submit(new ShoulderDownCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> -sd, () -> w)));
         switchReactor.onTriggered(armController.getRightStick(), () -> Strongback.submit(new ShoulderUpCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> su, () -> w)));
         switchReactor.onTriggered(armController.getStart(), () -> Strongback.submit(new RunRampCommand(ramp, 0.5, () -> 0.5)));
-
-//        switchReactor.onTriggered(armController.getLeftStick(), new SwitchToggle(new SolenoidExtendCommand(scissorLift), new SolenoidRetractCommand(scissorLift))::execute);
         switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
     }
 
@@ -149,7 +144,6 @@ public class Robot extends IterativeRobot {
     private void pushToDashboard() {
 
         SmartDashboard.putString("grabberDirection", grabber.getDirection().name());
-//        SmartDashboard.putString("scissorLiftDirection", scissorLift.getDirection().name());
         SmartDashboard.putNumber("shoulderAngle", shoulderSensor.getAngle());
         SmartDashboard.putString("wristStored", Boolean.toString(wristSwitch.isTriggered()));
         SmartDashboard.putNumber("driveSpeed", driveSpeed.read());
