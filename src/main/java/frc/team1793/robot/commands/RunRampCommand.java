@@ -9,8 +9,7 @@ public class RunRampCommand extends Command {
     private SpeedController ramp;
     private ContinuousRange speed;
 
-    public RunRampCommand(SpeedController ramp, double duration, ContinuousRange speed) {
-        super(duration);
+    public RunRampCommand(SpeedController ramp, ContinuousRange speed) {
         this.ramp = ramp;
         this.speed = speed;
     }
@@ -18,6 +17,6 @@ public class RunRampCommand extends Command {
     @Override
     public boolean execute() {
         ramp.setSpeed(speed.read());
-        return true;
+        return false;
     }
 }

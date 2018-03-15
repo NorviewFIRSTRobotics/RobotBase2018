@@ -17,6 +17,6 @@ public class LimitSwitch implements Switch {
 
     @Override
     public boolean isTriggered() {
-        return limitSwitch.get();
+        return !limitSwitch.get();
     }
 }

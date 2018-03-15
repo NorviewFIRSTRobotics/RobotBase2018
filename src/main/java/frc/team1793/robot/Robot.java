@@ -29,7 +29,6 @@ public class Robot extends IterativeRobot {
     private SpeedController ramp;
     private static boolean shoulderMoving;
     private AngleSensor shoulderSensor;
-    private ContinuousRange shoulderSpeed;
     private EnumAuto startPos;
     private ContinuousRange turnSpeed;
     private static boolean wristMoving;
@@ -104,6 +103,9 @@ public class Robot extends IterativeRobot {
         if (!shoulderMoving) {
             arm.runWrist(wristSpeed);
         }
+//        if(Math.abs(wristSpeed.read()) > 0.3 && !wristSwitch.isTriggered()){
+//            arm.runWrist(() -> 0.3);
+//        }
     }
 
     @Override
@@ -125,7 +127,8 @@ public class Robot extends IterativeRobot {
         //TODO get potentiometer angles!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! please
         switchReactor.onTriggered(armController.getRightBumper(), () -> Strongback.submit(new ShoulderDownCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> -sd, () -> w)));
         switchReactor.onTriggered(armController.getRightStick(), () -> Strongback.submit(new ShoulderUpCommand(arm, shoulderSensor::getAngle, wristSwitch::isTriggered, () -> su, () -> w)));
-        switchReactor.onTriggered(armController.getStart(), () -> Strongback.submit(new RunRampCommand(ramp, 0.5, () -> 0.5)));
+        switchReactor.whileTriggered(armController.getStart(), () -> Strongback.submit(new RunRampCommand(ramp, () -> 0.5)));
+        switchReactor.whileTriggered(armController.getSelect(), () -> Strongback.submit(new RunRampCommand(ramp, () -> -0.5)));
         switchReactor.onTriggered(armController.getLeftBumper(), new SwitchToggle(new SolenoidExtendCommand(grabber), new SolenoidRetractCommand(grabber))::execute);
     }
 
